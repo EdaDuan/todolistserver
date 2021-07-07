@@ -1,13 +1,12 @@
 /*
  * @Author: your name
  * @Date: 2021-07-02 11:19:13
- * @LastEditTime: 2021-07-07 15:34:23
+ * @LastEditTime: 2021-07-07 16:20:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /todoListServer/index.js
  */
 const http = require("http");
-var querystring = require("querystring");
 const server = http.createServer();
 const db = require("./src/db");
 server.on("request", async function (req, res) {
