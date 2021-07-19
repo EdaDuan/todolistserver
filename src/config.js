@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-06 16:25:32
- * @LastEditTime: 2021-07-07 14:50:22
+ * @LastEditTime: 2021-07-14 17:53:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: / todoListServer/src/config.js
@@ -15,5 +15,8 @@ const connectdb = () => {
     database: "todoList_db",
   });
 };
-
-module.exports = connectdb;
+const jwt = {
+  secret: "123456", //自定义 token 的加密条件字符串
+};
+exports.connectdb = connectdb;
+exports.jwt = jwt;

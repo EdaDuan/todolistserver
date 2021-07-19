@@ -1,23 +1,45 @@
 /*
  * @Author: your name
  * @Date: 2021-07-02 11:19:13
- * @LastEditTime: 2021-07-11 10:55:27
+ * @LastEditTime: 2021-07-18 23:56:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /todoListServer/index.js
  */
 const http = require("http");
 const server = http.createServer();
-var requestHandlers = require("./src/controllerdb");
+var controller = require("./src/controllerdb");
+const jwt = require("jsonwebtoken");
 server.on("request", async function (req, res) {
+  let userToken = jwt.decode(req.headers.authorization);
   res.writeHead(200, {
     "Access-Control-Allow-Origin": "*", // 允许跨域访问
     "Access-Control-Allow-Headers": "*", // 允许访问
     "Content-Type": "text/plain",
   });
   switch (req.url) {
+    case "/userLogin":
+      var postdata = [];
+      req.on("data", (chunk) => {
+        postdata += chunk;
+        postdata = JSON.parse(postdata);
+      });
+      req.on("end", () => {
+        controller.userLogin(res, postdata);
+      });
+      break;
+    case "/userRegister":
+      var postdata = [];
+      req.on("data", (chunk) => {
+        postdata += chunk;
+        postdata = JSON.parse(postdata);
+      });
+      req.on("end", () => {
+        controller.userRegister(res, postdata);
+      });
+      break;
     case "/getTodoList":
-      requestHandlers.getTodoList(res);
+      controller.getTodoList(res, userToken);
       break;
     case "/insert":
       var postdata = [];
@@ -26,7 +48,7 @@ server.on("request", async function (req, res) {
         postdata = JSON.parse(postdata);
       });
       req.on("end", () => {
-        requestHandlers.insetrTodoList(res, postdata);
+        controller.insetrTodoList(res, postdata, userToken);
       });
       break;
     case "/updateTodayStatus":
@@ -36,7 +58,7 @@ server.on("request", async function (req, res) {
         postdata = JSON.parse(postdata);
       });
       req.on("end", () => {
-        requestHandlers.updateTodayStatus(res, postdata);
+        controller.updateTodayStatus(res, postdata);
       });
       break;
     case "/moveTodoList":
@@ -46,7 +68,7 @@ server.on("request", async function (req, res) {
         postdata = JSON.parse(postdata);
       });
       req.on("end", () => {
-        requestHandlers.moveTodoList(res, postdata);
+        controller.moveTodoList(res, postdata);
       });
       break;
     case "/editTodoList":
@@ -56,7 +78,7 @@ server.on("request", async function (req, res) {
         postdata = JSON.parse(postdata);
       });
       req.on("end", () => {
-        requestHandlers.editTodoList(res, postdata);
+        controller.editTodoList(res, postdata);
       });
       break;
     case "/deleteTodoList":
@@ -66,7 +88,7 @@ server.on("request", async function (req, res) {
         postdata = JSON.parse(postdata);
       });
       req.on("end", () => {
-        requestHandlers.deleteTodoList(res, postdata);
+        controller.deleteTodoList(res, postdata);
       });
       break;
     default:
