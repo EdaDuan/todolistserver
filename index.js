@@ -1,15 +1,16 @@
 /*
  * @Author: your name
  * @Date: 2021-07-02 11:19:13
- * @LastEditTime: 2021-07-18 23:56:26
+ * @LastEditTime: 2021-07-21 16:59:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /todoListServer/index.js
  */
 const http = require("http");
 const server = http.createServer();
-var controller = require("./src/controllerdb");
 const jwt = require("jsonwebtoken");
+const md5 = require("md5");
+const controller = require("./src/controllerdb");
 server.on("request", async function (req, res) {
   let userToken = jwt.decode(req.headers.authorization);
   res.writeHead(200, {
@@ -23,6 +24,7 @@ server.on("request", async function (req, res) {
       req.on("data", (chunk) => {
         postdata += chunk;
         postdata = JSON.parse(postdata);
+        postdata.pwd = md5(postdata.pwd);
       });
       req.on("end", () => {
         controller.userLogin(res, postdata);
@@ -33,6 +35,7 @@ server.on("request", async function (req, res) {
       req.on("data", (chunk) => {
         postdata += chunk;
         postdata = JSON.parse(postdata);
+        postdata.pwd = md5(postdata.pwd);
       });
       req.on("end", () => {
         controller.userRegister(res, postdata);
@@ -41,7 +44,7 @@ server.on("request", async function (req, res) {
     case "/getTodoList":
       controller.getTodoList(res, userToken);
       break;
-    case "/insert":
+    case "/insertTodoList":
       var postdata = [];
       req.on("data", (chunk) => {
         postdata += chunk;
@@ -51,14 +54,14 @@ server.on("request", async function (req, res) {
         controller.insetrTodoList(res, postdata, userToken);
       });
       break;
-    case "/updateTodayStatus":
+    case "/updateTodoStatus":
       var postdata = [];
       req.on("data", (chunk) => {
         postdata += chunk;
         postdata = JSON.parse(postdata);
       });
       req.on("end", () => {
-        controller.updateTodayStatus(res, postdata);
+        controller.updateTodoStatus(res, postdata);
       });
       break;
     case "/moveTodoList":

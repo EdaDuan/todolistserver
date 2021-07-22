@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-03 18:15:59
- * @LastEditTime: 2021-07-19 09:36:00
+ * @LastEditTime: 2021-07-22 11:48:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: / todoListServer/src/db/db.js
@@ -31,7 +31,7 @@ const getTodoList = async (userToken) => {
 const updateAll = async (data) => {
   let resPromise;
   for (let item of data) {
-    const sql = `update todoTasks set taskName = "${item.taskName}",finishTime = "${item.finishTime}",createTime = "${item.createTime}",status = "${item.status},isDel = "${item.isDel},account = "${item.account}"where taskId = "${item.taskId}"`;
+    const sql = `update todoTasks set taskName = "${item.taskName}",finishTime = "${item.finishTime}",status = "${item.status}",isDel = "${item.isDel}",account = "${item.account}" where taskId = "${item.taskId}"`;
     resPromise = await new Promise((resolve) => {
       connection.query(sql, (err, result) => {
         if (err) {
@@ -87,7 +87,7 @@ const localDel = (localTodoList, userToken) => {
 };
 // 登陆
 const userLogin = async (data) => {
-  let { account, pwd, localTodoList } = data;
+  let { account, pwd, localTodoList, tag } = data;
   const sql = `select * from todoUser where account = "${account}" and pwd = "${pwd}"`;
   const res = await new Promise((resolve) => {
     connection.query(sql, (err, result) => {
@@ -100,9 +100,11 @@ const userLogin = async (data) => {
           expiresIn: 3600,
         });
         let temp = jwt.decode(ses_token);
-        localAdd(localTodoList, temp);
-        localUpdate(localTodoList, temp);
-        localDel(localTodoList, temp);
+        if (tag) {
+          localAdd(localTodoList, temp);
+          localUpdate(localTodoList, temp);
+          localDel(localTodoList, temp);
+        }
         return resolve({
           ok: true,
           data: result,
@@ -175,7 +177,7 @@ const insetrTodoList = async (data, userToken) => {
   }
 };
 // 修改今日待办项的状态单条修改 和全选修改
-const updateTodayStatus = async (data) => {
+const updateTodoStatus = async (data) => {
   let res;
   for (let item of data) {
     const sql = `update todoTasks set status =ABS(status-1) where taskId = "${item.taskId}"`;
@@ -233,7 +235,7 @@ const deleteTodoList = async (data) => {
     res = await new Promise((resolve) => {
       connection.query(sql, (err, result) => {
         if (err) {
-          return resolve({ ok: false, error: "删除失败" });
+          return resolve({ ok: false, error: "回收站删除失败" });
         }
         return resolve({
           ok: true,
@@ -248,7 +250,7 @@ exports.userLogin = userLogin;
 exports.userRegister = userRegister;
 exports.getTodoList = getTodoList;
 exports.insetrTodoList = insetrTodoList;
-exports.updateTodayStatus = updateTodayStatus;
+exports.updateTodoStatus = updateTodoStatus;
 exports.moveTodoList = moveTodoList;
 exports.editTodoList = editTodoList;
 exports.deleteTodoList = deleteTodoList;

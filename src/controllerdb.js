@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-07-08 10:06:09
- * @LastEditTime: 2021-07-18 11:29:38
+ * @LastEditTime: 2021-07-21 16:59:08
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: / todoListServer/src/requestHandlers.js
@@ -28,8 +28,8 @@ const insetrTodoList = async (res, data, userToken) => {
   res.end(JSON.stringify(result));
 };
 // 更新todaytodoList状态
-const updateTodayStatus = async (res, data) => {
-  const result = await db.updateTodayStatus(data);
+const updateTodoStatus = async (res, data) => {
+  const result = await db.updateTodoStatus(data);
   res.end(JSON.stringify(result));
 };
 // 假删除待待办项
@@ -51,7 +51,7 @@ exports.userLogin = userLogin;
 exports.userRegister = userRegister;
 exports.getTodoList = getTodoList;
 exports.insetrTodoList = insetrTodoList;
-exports.updateTodayStatus = updateTodayStatus;
+exports.updateTodoStatus = updateTodoStatus;
 exports.moveTodoList = moveTodoList;
 exports.editTodoList = editTodoList;
 exports.deleteTodoList = deleteTodoList;
